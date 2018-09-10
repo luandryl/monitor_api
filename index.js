@@ -7,16 +7,26 @@ import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
+import passport from 'passport'
 /*
   Database Import
 */
-import Database from './src/database/Database'
+import Database from './src/config/database'
 
 /*
   Import Endpoints
   Ex : import student from './src/routes/Student.Router'
 */
 import user from './src/routes/User.Router'
+import auth from './src/routes/Auth.Router'
+
+/*
+	middleware
+*/
+import PassportMiddleware from './src/middleware/Passport.Middleware'
+const protect = new PassportMiddleware(passport)
+protect.protect()
+
 let app = express()
 
 app.use(logger('dev'))
@@ -33,7 +43,8 @@ const conn = new Database('local')
   routes to student resource
   ex: app.use('/student', student)
 */
-app.use('/', user)
+app.use('/auth/', auth);
+app.use('/user/', user)
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found')

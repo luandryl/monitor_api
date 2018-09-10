@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import passport from 'passport'
+import cors from 'cors'
+
 /*
   Database Import
 */
@@ -34,7 +36,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(cors({origin: 'http://localhost:8080'}));
 /*
   [Database conection] -> refactor
 */

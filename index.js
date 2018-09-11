@@ -65,7 +65,7 @@ app.use((err, req, res) => {
   res.render('error')
 })
 
-var port = process.env.PORT || 3000
+var port = process.env.PORT
 
 app.listen(port, () => {
 	console.log('Listening on ' + port)

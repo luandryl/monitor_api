@@ -898,7 +898,7 @@ app.use(__WEBPACK_IMPORTED_MODULE_4_body_parser___default.a.json())
 app.use(__WEBPACK_IMPORTED_MODULE_4_body_parser___default.a.urlencoded({ extended: false }))
 app.use(__WEBPACK_IMPORTED_MODULE_3_cookie_parser___default()())
 app.use(__WEBPACK_IMPORTED_MODULE_0_express___default.a.static(__WEBPACK_IMPORTED_MODULE_1_path___default.a.join(__dirname, 'public')))
-app.use(__WEBPACK_IMPORTED_MODULE_7_cors___default()({origin: 'http://localhost:5000'}));
+app.use(__WEBPACK_IMPORTED_MODULE_7_cors___default()({origin: 'http://localhost:8080'}));
 /*
   [Database conection] -> refactor
 */
@@ -927,11 +927,7 @@ app.use((err, req, res) => {
   res.render('error')
 })
 
-var port = process.env.PORT || 3000
-
-app.listen(port, () => {
-	console.log('Listening on 3000')
-})
+app.listen(process.env.PORT || 3000)
 
 /* harmony default export */ __webpack_exports__["default"] = (app);
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "/", __webpack_require__(1)))

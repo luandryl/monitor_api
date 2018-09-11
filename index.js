@@ -36,7 +36,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(cors({origin: 'http://localhost:5000'}));
+app.use(cors({origin: 'http://localhost:8080'}));
 /*
   [Database conection] -> refactor
 */
@@ -65,10 +65,6 @@ app.use((err, req, res) => {
   res.render('error')
 })
 
-var port = process.env.PORT || 3000
-
-app.listen(port, () => {
-	console.log('Listening on 3000')
-})
+app.listen(process.env.PORT || 3000)
 
 export default app

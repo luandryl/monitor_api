@@ -927,7 +927,11 @@ app.use((err, req, res) => {
   res.render('error')
 })
 
-app.listen(process.env.PORT || 3000)
+var port = process.env.PORT || 3000
+
+app.listen(port, () => {
+	console.log('Listening on ' + port)
+})
 
 /* harmony default export */ __webpack_exports__["default"] = (app);
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "/", __webpack_require__(1)))

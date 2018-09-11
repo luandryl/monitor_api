@@ -18,6 +18,7 @@ fs.readdirSync('node_modules')
 
 module.exports = {
 	entry: './index.js',
+	target: 'node',
 	output: {
 		path: path.resolve(__dirname, 'build'),
 		filename: 'app.build.js'

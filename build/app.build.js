@@ -482,7 +482,7 @@ app.use(__WEBPACK_IMPORTED_MODULE_4_body_parser___default.a.json())
 app.use(__WEBPACK_IMPORTED_MODULE_4_body_parser___default.a.urlencoded({ extended: false }))
 app.use(__WEBPACK_IMPORTED_MODULE_3_cookie_parser___default()())
 app.use(__WEBPACK_IMPORTED_MODULE_0_express___default.a.static(__WEBPACK_IMPORTED_MODULE_1_path___default.a.join(__dirname, 'public')))
-app.use(__WEBPACK_IMPORTED_MODULE_7_cors___default()({origin: 'http://localhost:8080'}));
+app.use(__WEBPACK_IMPORTED_MODULE_7_cors___default()());
 /*
   [Database conection] -> refactor
 */

@@ -34,6 +34,26 @@ export default class BaseController {
       so we resolve a promise call to any model (the model this is given by our child class)
       and before resolve we send the response to the client
   */
+
+  getAll (req, res) {
+
+    let modelPromise = new this.model().getAll()
+    
+    Promise.all([
+			modelPromise
+		]).then((data) => {
+			if(data) {
+        res.send(data[0])
+        res.status(201);
+        res.end()
+      }
+		}).catch(err => {
+			res.json(err);
+      res.status(400);
+      res.end();
+		})
+  }
+
   save (req, res) {
 
     let modelPromise = new this.model(req.body).persist()
@@ -96,8 +116,7 @@ export default class BaseController {
     let data = {
 			_id: req.params.id
   	}	
-		
-    let modelPromise = this.model(data).deleteById()
+    let modelPromise = new this.model(data).deleteById()
 
 		Promise.all([
 			modelPromise

@@ -21,6 +21,7 @@ import Database from './src/config/database'
 */
 import user from './src/routes/User.Router'
 import auth from './src/routes/Auth.Router'
+import patient from './src/routes/Patient.Router'
 
 /*
 	middleware
@@ -47,6 +48,7 @@ const conn = new Database('local')
 */
 app.use('/auth/', auth);
 app.use('/user/', user)
+app.use('/patient', patient)
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found')

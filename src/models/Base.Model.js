@@ -44,6 +44,10 @@ export default class BaseModel {
     return this.model.create(modelObj)
   }
 
+  getAll() {
+    return this.model.find({})
+  }
+
   getById () {
     return this.model.find({_id: this.data._id}).exec()
   }

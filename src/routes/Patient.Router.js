@@ -23,7 +23,7 @@ router.get('/:id', protect, (req, res) => {
   pt.getById(req, res)
 })
  
-router.put('/:id', protect, (req, res) => {
+router.put('/:id', (req, res) => {
   pt.updateById(req, res)
 })
 

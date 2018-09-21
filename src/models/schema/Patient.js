@@ -4,6 +4,12 @@ import mongoose from 'mongoose'
  * Restrictions
  */
 
+const userRestriction = {
+	type: mongoose.Schema.Types.ObjectId,
+	ref: 'User',
+	required: true
+}
+
 const nameRestriction = {
   type: String,
   required: [true, 'No name given'],
@@ -29,6 +35,7 @@ const weightRestricion = {
  */
 
 const patientSchema = new mongoose.Schema({
+  _user: userRestriction,
   first_name: nameRestriction,
   last_name: nameRestriction,
   email: emailRestriction,

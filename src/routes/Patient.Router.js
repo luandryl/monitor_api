@@ -15,6 +15,10 @@ router.post('/', protect, (req, res) => {
   pt.save(req, res)
 })
 
+router.get('/doctor/:id', protect, (req, res) => {
+  pt.getByDoc(req, res);
+})
+
 router.get('/', protect, (req, res) => {
   pt.getAll(req, res);
 })

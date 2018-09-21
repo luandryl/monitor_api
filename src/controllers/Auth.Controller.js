@@ -45,10 +45,10 @@ export default class AuthController {
 		const data = {
 			login: req.body.login
 		}
-		new User(data).getByField().then(user => {
+		new User().getByField(data).then(user => {
 			if (user.lenght !== 0){
 				user = user[0];
-				if (HashPassword.encrypt(req.body.password) === HashPassword.encrypt(user.password)) {
+				if (HashPassword.encrypt(req.body.password) === user.password) {
 					let token = this._generateToken(user)
 					res.set('authorization', `${token.type_token} ${token.acess_token}`)
 					user.password = null

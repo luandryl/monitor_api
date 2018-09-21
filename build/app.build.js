@@ -599,6 +599,10 @@ router.post('/', protect, (req, res) => {
   pt.save(req, res)
 })
 
+router.get('/doctor/:id', protect, (req, res) => {
+  pt.getByDoc(req, res);
+})
+
 router.get('/', protect, (req, res) => {
   pt.getAll(req, res);
 })
@@ -876,10 +880,10 @@ class AuthController {
 		const data = {
 			login: req.body.login
 		}
-		new __WEBPACK_IMPORTED_MODULE_0__models_User_Model__["a" /* default */](data).getByField().then(user => {
+		new __WEBPACK_IMPORTED_MODULE_0__models_User_Model__["a" /* default */]().getByField(data).then(user => {
 			if (user.lenght !== 0){
 				user = user[0];
-				if (__WEBPACK_IMPORTED_MODULE_3__services_HashPassword__["a" /* default */].encrypt(req.body.password) === __WEBPACK_IMPORTED_MODULE_3__services_HashPassword__["a" /* default */].encrypt(user.password)) {
+				if (__WEBPACK_IMPORTED_MODULE_3__services_HashPassword__["a" /* default */].encrypt(req.body.password) === user.password) {
 					let token = this._generateToken(user)
 					res.set('authorization', `${token.type_token} ${token.acess_token}`)
 					user.password = null
@@ -932,6 +936,23 @@ class UserController extends __WEBPACK_IMPORTED_MODULE_0__Base_Controller__["a" 
 
   constructor() {
     super(__WEBPACK_IMPORTED_MODULE_1__models_Patient_Model__["a" /* default */])
+  }
+
+  getByDoc (req, res) {
+    let data = {
+      _user: req.params.id
+    }
+    let patientPromise = new __WEBPACK_IMPORTED_MODULE_1__models_Patient_Model__["a" /* default */]().getByField(data)
+
+    Promise.all([
+      patientPromise
+    ]).then((data) => {
+      if (data) {
+        res.status(200).json(data[0]).end();
+      }
+    }).catch (err => {
+      console.log(err)
+    })
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UserController;
@@ -1058,6 +1079,12 @@ class UserModel extends __WEBPACK_IMPORTED_MODULE_1__Base_Model__["a" /* default
  * Restrictions
  */
 
+const userRestriction = {
+	type: __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Schema.Types.ObjectId,
+	ref: 'User',
+	required: true
+}
+
 const nameRestriction = {
   type: String,
   required: [true, 'No name given'],
@@ -1083,6 +1110,7 @@ const weightRestricion = {
  */
 
 const patientSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Schema({
+  _user: userRestriction,
   first_name: nameRestriction,
   last_name: nameRestriction,
   email: emailRestriction,

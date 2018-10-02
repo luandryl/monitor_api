@@ -89,8 +89,100 @@ module.exports = require("passport");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__schema_User__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Base_Model__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
+
+
+/*
+  Base model Operations
+*/
+class BaseModel {
+  /*
+    The constructor recives 
+    @model => mongoose Schema
+    @key   => string of Mongoose Object ID
+    @data  => transitional data object {
+      the purpose of this attribute its to be a two way data bind between the requisition object 
+      that we could store in mongodb or result of query in data stored on mongoDB  
+    }
+  */
+  constructor(model, key, data) {
+    __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Promise = Promise;
+    this.model = model;
+    this.key = key;
+    this.data = data;
+  }
+
+  /*
+    Basics crud -> ID bases
+  */
+
+  /*
+    All the methods working in the same way -> 
+      return a promise from the action that we try 
+      to make
+  */
+  /*
+    eg: persist()
+      this.data  === req.body -> object that we want to store
+      this.model === StudentSchema, BookSchema, anyStuffSchema ...
+
+      so we return a promise to who calls the persist method and who 
+      calls(that is who actually intend to save data) 
+      must have to resolve this `create` promise
+
+  */
+  persist () {
+    let modelObj = new this.model(this.data);
+    return this.model.create(modelObj)
+  }
+
+  getAll() {
+    return this.model.find({})
+  }
+
+  getById () {
+    return this.model.find({_id: this.data._id}).exec()
+  }
+
+  updateById () {
+    return this.model.findByIdAndUpdate(this.data._id, this.data)
+  }
+
+  /*
+    this its return the number of rows afecteds by the data update,
+    not the updated objects
+  */
+  deleteById(){
+    return this.model.findByIdAndRemove(this.data._id)
+  }
+
+  /*
+    advanced API -> Simple query on modelObjects coverage
+  */
+  getByField (data) {
+    return this.model.find(data).exec()
+  }
+
+  deleteByField (query) {
+    return this.model.findOneAndRemove(query).exec()
+  }
+
+  updateByField (query) {
+    return this.model.update(query, this.data)
+  }
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = BaseModel;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__schema_User__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Base_Model__ = __webpack_require__(3);
 
 
 
@@ -122,7 +214,7 @@ class UserModel extends __WEBPACK_IMPORTED_MODULE_1__Base_Model__["a" /* default
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -136,7 +228,7 @@ class UserModel extends __WEBPACK_IMPORTED_MODULE_1__Base_Model__["a" /* default
 });
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -235,8 +327,9 @@ class BaseController {
   }
 
   updateById (req, res) {
+    let data  = Object.assign(req.body, req.params)
     
-    let modelPromise = new this.model(req.body).updateById()
+    let modelPromise = new this.model(data).updateById()
 
 		Promise.all([
 			modelPromise
@@ -278,98 +371,6 @@ class BaseController {
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = BaseController;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
-
-
-/*
-  Base model Operations
-*/
-class BaseModel {
-  /*
-    The constructor recives 
-    @model => mongoose Schema
-    @key   => string of Mongoose Object ID
-    @data  => transitional data object {
-      the purpose of this attribute its to be a two way data bind between the requisition object 
-      that we could store in mongodb or result of query in data stored on mongoDB  
-    }
-  */
-  constructor(model, key, data) {
-    __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Promise = Promise;
-    this.model = model;
-    this.key = key;
-    this.data = data;
-  }
-
-  /*
-    Basics crud -> ID bases
-  */
-
-  /*
-    All the methods working in the same way -> 
-      return a promise from the action that we try 
-      to make
-  */
-  /*
-    eg: persist()
-      this.data  === req.body -> object that we want to store
-      this.model === StudentSchema, BookSchema, anyStuffSchema ...
-
-      so we return a promise to who calls the persist method and who 
-      calls(that is who actually intend to save data) 
-      must have to resolve this `create` promise
-
-  */
-  persist () {
-    let modelObj = new this.model(this.data);
-    return this.model.create(modelObj)
-  }
-
-  getAll() {
-    return this.model.find({})
-  }
-
-  getById () {
-    return this.model.find({_id: this.data._id}).exec()
-  }
-
-  updateById () {
-    return this.model.findByIdAndUpdate(this.data._id, this.data)
-  }
-
-  /*
-    this its return the number of rows afecteds by the data update,
-    not the updated objects
-  */
-  deleteById(){
-    return this.model.findByIdAndRemove(this.data._id)
-  }
-
-  /*
-    advanced API -> Simple query on modelObjects coverage
-  */
-  getByField (data) {
-    return this.model.find(data).exec()
-  }
-
-  deleteByField (query) {
-    return this.model.findOneAndRemove(query).exec()
-  }
-
-  updateByField (query) {
-    return this.model.update(query, this.data)
-  }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = BaseModel;
 
 
 /***/ }),
@@ -420,9 +421,9 @@ class Database {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_passport__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_passport___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_passport__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_User_Model__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_jwt__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_passport_jwt__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_User_Model__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__config_jwt__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_passport_jwt__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_passport_jwt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_passport_jwt__);
 /**
  * @namespace Middleware
@@ -595,8 +596,16 @@ const protect = __WEBPACK_IMPORTED_MODULE_2_passport___default.a.authenticate('j
 	session: false
 })
 
+router.post('/bpm/', (req, res) => {
+  pt.saveBpm(req, res)
+})
+
 router.post('/', protect, (req, res) => {
   pt.save(req, res)
+})
+
+router.get('/monitor/:id', protect, (req, res) => {
+  pt.loadDataFromSensorTag(req, res);
 })
 
 router.get('/doctor/:id', protect, (req, res) => {
@@ -611,7 +620,7 @@ router.get('/:id', protect, (req, res) => {
   pt.getById(req, res)
 })
  
-router.put('/:id', (req, res) => {
+router.put('/:_id', protect, (req, res) => {
   pt.updateById(req, res)
 })
 
@@ -828,11 +837,11 @@ app.listen(port, () => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__models_User_Model__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_jwt__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jsonwebtoken__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__models_User_Model__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_jwt__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jsonwebtoken__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jsonwebtoken___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jsonwebtoken__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_HashPassword__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_HashPassword__ = __webpack_require__(27);
 /**
  * AuthController handle with login and signup process.
  * @module AuthController
@@ -926,8 +935,10 @@ class AuthController {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Base_Controller__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Base_Controller__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_Patient_Model__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_Sensor_Model__ = __webpack_require__(23);
+
 
 
 
@@ -936,6 +947,37 @@ class UserController extends __WEBPACK_IMPORTED_MODULE_0__Base_Controller__["a" 
 
   constructor() {
     super(__WEBPACK_IMPORTED_MODULE_1__models_Patient_Model__["a" /* default */])
+  }
+
+  loadDataFromSensorTag(req, res) {
+    let data = {
+      sensorTag: req.params.id
+    }
+    console.log(data)
+    new __WEBPACK_IMPORTED_MODULE_2__models_Sensor_Model__["a" /* default */]().getByField(data).then(data => {
+      if (data) {
+        res.json(data).status(200).end()
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  saveBpm (req, res) {
+    if (req.body) {
+      const sensorTag = req.body.sensorTag.split('\\')[0]
+      let bpm = req.body.bpm.split('\\')[0]
+      let data = {
+        sensorTag: sensorTag,
+        bpm: bpm
+      }
+      new __WEBPACK_IMPORTED_MODULE_2__models_Sensor_Model__["a" /* default */](data).persist().then((savedObj) => {
+        res.send(savedObj[0]).status(201).end()
+      }).catch(err => {
+        console.log(err)
+      })
+      res.end();
+    }
   }
 
   getByDoc (req, res) {
@@ -963,8 +1005,8 @@ class UserController extends __WEBPACK_IMPORTED_MODULE_0__Base_Controller__["a" 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Base_Controller__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_User_Model__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Base_Controller__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_User_Model__ = __webpack_require__(4);
 
 
 
@@ -1051,8 +1093,8 @@ class UserController extends __WEBPACK_IMPORTED_MODULE_0__Base_Controller__["a" 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__schema_Patient__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Base_Model__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__schema_Patient__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Base_Model__ = __webpack_require__(3);
 
 
 
@@ -1068,6 +1110,26 @@ class UserModel extends __WEBPACK_IMPORTED_MODULE_1__Base_Model__["a" /* default
 
 /***/ }),
 /* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__schema_Sensor__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Base_Model__ = __webpack_require__(3);
+
+
+
+
+class UserModel extends __WEBPACK_IMPORTED_MODULE_1__Base_Model__["a" /* default */] {
+
+  constructor(data) {
+    super(__WEBPACK_IMPORTED_MODULE_0__schema_Sensor__["a" /* default */], '_id', data)
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = UserModel;
+
+
+/***/ }),
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1105,6 +1167,13 @@ const weightRestricion = {
     type: Number,
     required: [true, 'No weight given']
 }
+
+const sensorRestricion = {
+  type: Number,
+  required: [true, 'No weight given']
+}
+
+
 /**
  * Student Schema
  */
@@ -1117,12 +1186,41 @@ const patientSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Schem
   age: ageRestricion,
   weight: weightRestricion,
   medicines: nameRestriction,
+  sensor: sensorRestricion
 })
 
 /* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('Patient', patientSchema));
 
 /***/ }),
-/* 24 */
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mongoose___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mongoose__);
+
+
+const bpmRestricion = {
+    type: Number,
+    required: [true, 'No bpm given']
+}
+
+const sensorTagRestricion = {
+    type: Number,
+    required: [true, 'No bpm given']
+}
+
+const sensorSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Schema({
+    bpm: bpmRestricion,
+    sensorTag: sensorTagRestricion
+})
+
+/* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('Sensor', sensorSchema));
+  
+
+
+/***/ }),
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1174,11 +1272,11 @@ const userSchema = new __WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.Schema({
 /* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_mongoose___default.a.model('User', userSchema));
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_crypto__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_crypto__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_crypto___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_crypto__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_hash__ = __webpack_require__(18);
 
@@ -1226,19 +1324,19 @@ class HashPassword {
 
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = require("crypto");
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = require("passport-jwt");

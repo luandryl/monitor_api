@@ -11,8 +11,16 @@ const protect = passport.authenticate('jwt', {
 	session: false
 })
 
+router.post('/bpm/', (req, res) => {
+  pt.saveBpm(req, res)
+})
+
 router.post('/', protect, (req, res) => {
   pt.save(req, res)
+})
+
+router.get('/monitor/:id', protect, (req, res) => {
+  pt.loadDataFromSensorTag(req, res);
 })
 
 router.get('/doctor/:id', protect, (req, res) => {
@@ -27,7 +35,7 @@ router.get('/:id', protect, (req, res) => {
   pt.getById(req, res)
 })
  
-router.put('/:id', (req, res) => {
+router.put('/:_id', protect, (req, res) => {
   pt.updateById(req, res)
 })
 

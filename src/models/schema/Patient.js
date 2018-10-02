@@ -30,6 +30,13 @@ const weightRestricion = {
     type: Number,
     required: [true, 'No weight given']
 }
+
+const sensorRestricion = {
+  type: Number,
+  required: [true, 'No weight given']
+}
+
+
 /**
  * Student Schema
  */
@@ -42,6 +49,7 @@ const patientSchema = new mongoose.Schema({
   age: ageRestricion,
   weight: weightRestricion,
   medicines: nameRestriction,
+  sensor: sensorRestricion
 })
 
 export default mongoose.model('Patient', patientSchema)

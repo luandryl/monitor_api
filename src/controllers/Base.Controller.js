@@ -93,8 +93,9 @@ export default class BaseController {
   }
 
   updateById (req, res) {
+    let data  = Object.assign(req.body, req.params)
     
-    let modelPromise = new this.model(req.body).updateById()
+    let modelPromise = new this.model(data).updateById()
 
 		Promise.all([
 			modelPromise

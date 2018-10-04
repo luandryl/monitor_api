@@ -31,6 +31,16 @@ const weightRestricion = {
     required: [true, 'No weight given']
 }
 
+const sexRestriction = {
+  type: String,
+  required: [true, 'no sex given']
+}
+
+const sendentaryRestriction = {
+  type: String,
+  required: [true, 'please inform the situation of physics atv']
+}
+
 const sensorRestricion = {
   type: Number,
   required: [true, 'No weight given']
@@ -48,6 +58,8 @@ const patientSchema = new mongoose.Schema({
   email: emailRestriction,
   age: ageRestricion,
   weight: weightRestricion,
+  sex: sexRestriction,
+  sedentary: sendentaryRestriction,
   medicines: nameRestriction,
   sensor: sensorRestricion
 })
